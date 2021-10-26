@@ -1,11 +1,21 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt, ethereum, Address } from "@graphprotocol/graph-ts"
 import {
   idleCDOimplementation,
   OwnershipTransferred,
   Paused,
   Unpaused
 } from "../generated/idleCDOimplementation/idleCDOimplementation"
-import { ExampleEntity } from "../generated/schema"
+import { ExampleEntity, trancheAAPrice } from "../generated/schema"
+
+let TrancheAA: "0x9c3bC87693c65E740d8B2d5F0820E04A61D8375B"
+let TrancheBB: "0x4473bc90118b18be890af42d793b5252c4dc382d"
+let defaultAddress: "0x620E1cf616444d524c81841B85f60F8d3Ea64751"
+export function handleBlock(block: ethereum.Block): void {
+  let contract = idleCDOimplementation.bind(Address.fromString(defaultAddress))
+  let entity = new trancheAAPrice(block.number.toString())
+  entity.CDOPrice = contract.tranchePrice(Address.fromString(TrancheAA));
+  entity.save()
+}
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -97,6 +107,6 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   // - contract.withdrawBB(...)
 }
 
-export function handlePaused(event: Paused): void {}
+export function handlePaused(event: Paused): void { }
 
-export function handleUnpaused(event: Unpaused): void {}
+export function handleUnpaused(event: Unpaused): void { }
