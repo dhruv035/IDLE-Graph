@@ -15,6 +15,9 @@ export function handleBlock(block: ethereum.Block): void {
   let entity = new trancheAAPrice(block.number.toString())
   entity.CDOPrice = contract.tranchePrice(Address.fromString(TrancheAA));
   entity.save()
+
+
+
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
