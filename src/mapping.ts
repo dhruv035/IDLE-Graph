@@ -7,15 +7,20 @@ import {
 } from "../generated/idleCDOimplementation/idleCDOimplementation"
 import { ExampleEntity, trancheAAPrice } from "../generated/schema"
 
-let TrancheAA: "0x9c3bC87693c65E740d8B2d5F0820E04A61D8375B"
-let TrancheBB: "0x4473bc90118b18be890af42d793b5252c4dc382d"
-let defaultAddress: "0x620E1cf616444d524c81841B85f60F8d3Ea64751"
-export function handleBlock(block: ethereum.Block): void {
-  let contract = idleCDOimplementation.bind(Address.fromString(defaultAddress))
-  let entity = new trancheAAPrice(block.number.toString())
-  entity.CDOPrice = contract.tranchePrice(Address.fromString(TrancheAA));
-  entity.save()
 
+
+
+export function handleBlock(block: ethereum.Block): void {
+  let defaultAdd = "0x2d90DF48C706874F1b9A02054273996FBF458964"
+  let TrancheAA = "0x9c3bC87693c65E740d8B2d5F0820E04A61D8375B"
+  let contract = idleCDOimplementation.bind(Address.fromString(defaultAdd))
+  let entity = new trancheAAPrice(block.number.toString())
+
+  let price = contract.try_virtualPrice(Address.fromString(TrancheAA));
+  if (price.reverted) { } else {
+    entity.CDOPrice = price.value
+    entity.save()
+  }
 
 
 }
